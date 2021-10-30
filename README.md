@@ -1,6 +1,12 @@
 # Aqira 
 Scholarvox Scraper in Python3, written in roughly 2 days.
 
+## How does it work?
+
+WebDriver talks to a browser through a driver. Communication is two way: WebDriver passes commands to the browser through the driver, and receives information back via the same route.
+
+![Componenets](https://www.selenium.dev/images/documentation/webdriver/basic_comms.png)
+
 ## Drawbacks and important notes
 
 * The process is damn slow, it tooks roughly 1.45 hours to scrape 400 pages of a book, if you can wait this tool is for you .
