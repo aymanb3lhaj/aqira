@@ -29,9 +29,9 @@ python main.py
 * This Script is only compatible with *Google Chrome*, maybe adding support for Firefox and other browsers. 
 * ~~Setting your Parameters (Changing document link, MAX\_PAGES) is done for now in the source code `main.py`~~.
 * Added parsing CLI flags, no need for source code modification (except for site credentials).
+* Scholarvox is a trashy website, don't try to select by ids or classes, use XPATH to locate elements on the page.
 * Chrome Options extensive list (Chromium C++ source code)
   - [List of common switches](/master/chrome/common/chrome_switches.cc)
   - [List of headless switches](/master/headless/app/headless_shell_switches.cc)
   - [To search other switches](https://source.chromium.org/search?q=file:switches.cc&ss=chromium%2Fchromium%2Fs)
   - [List of preferences](/master/chrome/common/pref_names.c)
-* Scholarvox is a trashy website, don't try to select by ids or classes, use XPATH to locate elements on the page.
