@@ -43,19 +43,21 @@ class Color(enum.Enum):
     UNDERLINE = '\033[4'
 
 def parseArguments():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description='Aqira, a Scholarvox Books Scraper.')
     parser.add_argument('-id', '--docid', type=int, help='Book ID')
     parser.add_argument('-l', '--lower', type=int, help='Lower bound for Pages', default=1)
     parser.add_argument('-u', '--upper', type=int, help='Upper bound for Pages', default=15)
     parser.add_argument('-o', '--output', type=str, help='Output PDF name', default='output.pdf')
+    parser.add_argument('-s', '--square', type=bool, help='Square Book Layout', default=False)
     args = parser.parse_args()
-    return (args.docid, args.lower, args.upper, args.output)
+    return (args.docid, args.lower, args.upper, args.output, args.square)
 
 def getDriver():
     try:
         s = Service(ChromeDriverManager().install()) 
         config = webdriver.ChromeOptions() 
         config.add_argument('--disable-infobars')
+        config.add_argument('--incognito')
         config.add_experimental_option('excludeSwitches', ['enable-automation'])
         config.add_experimental_option('useAutomationExtension', False)
         prefs = {"credentials_enable_service": False,
@@ -122,9 +124,9 @@ def scrapeContent(driver, docid, lower, upper, output, SQ=False):
         driver.quit()
 
 def main():
-    DOCID, LOWER, UPPER, OUTPUT= parseArguments()
+    DOCID, LOWER, UPPER, OUTPUT, SQ= parseArguments()
     DRIVER, DIM = getDriver()
-    scrapeContent(DRIVER, DOCID, LOWER, UPPER, OUTPUT)
+    scrapeContent(DRIVER, DOCID, LOWER, UPPER, OUTPUT, SQ)
     
 if __name__ == '__main__':
     main()
