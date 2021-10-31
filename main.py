@@ -9,6 +9,7 @@ import datetime
 from fpdf import FPDF 
 from PIL import Image
 from selenium import webdriver
+from colorama import init, Fore 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
@@ -29,18 +30,8 @@ H,W = 1300, 884
 A4_CROP = (338, 0, 912, 796)
 SQ_CROP = (228, 0, 1028, 795) # Square Crop
 
-# Task: Add colored text in termianl
-# exmaple: print(f"{bcolors.WARNING}Warning: No active frommets remain. Continue?{bcolors.ENDC}")
-class Color(enum.Enum):
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4'
+# Task: Add colored text in termianl (Colorama lib) 
+init(autoreset=True, convert=True)
 
 def parseArguments():
     parser = argparse.ArgumentParser(description='Aqira, a Scholarvox Books Scraper.')
@@ -77,7 +68,7 @@ def siteAuth(driver):
     driver.find_element(By.XPATH, '/html/body/div[8]/div[2]/form/p[1]/input').send_keys(USERNAME)
     driver.find_element(By.XPATH, '/html/body/div[8]/div[2]/form/p[2]/input').send_keys(PASSWORD)
     driver.find_element(By.XPATH, '/html/body/div[8]/div[2]/form/input[2]').click()
-    print('Authentification Done!')
+    print(Fore.GREEN + 'Authentification Done!')
 
 # Task: Define Auth interval, Fix Cropping and improve timing
 def scrapeContent(driver, docid, lower, upper, output, SQ=False):
@@ -88,15 +79,16 @@ def scrapeContent(driver, docid, lower, upper, output, SQ=False):
         try:
             os.mkdir(PATH + '\images')
         except OSError:
-            print('ERROR: Creation of directory Failed!', file=sys.stderr)
+            print(Fore.RED + 'ERROR: Creation of directory Failed!', file=sys.stderr)
         else:
-            print('Successfully created images directory')
+            print(Fore.GREEN + 'Successfully created images directory')
 
     t0 = datetime.datetime.now().minute
     siteAuth(driver)
     pdf = FPDF(unit='mm')
 
     try:
+        auth_stack = []
         for i in range(lower, upper+1):
             name = 'Page%04d' % i 
             driver.get('%s%d' % (URL, i))
@@ -113,11 +105,12 @@ def scrapeContent(driver, docid, lower, upper, output, SQ=False):
             W,H = float(W * 0.264583), float(H * 0.264583)
             pdf.add_page(format=(W, H))
             pdf.image(r'%s\images\%s.png' % (PATH, name), 0, 0, W, H)
-            print('Finished', name)
+            print(Fore.GREEN + '[Finished %s]' % name)
             # Reauthentificate every 20 minutes
             t1 = datetime.datetime.now().minute
-            if t1-t0 == 20:
+            if t1-t0 == 20 and not auth_stack[-1]:
                 siteAuth(driver)
+                auth_stack.append(True)
         pdf.output(name=output, dest='F')
     finally:
         driver.close()
