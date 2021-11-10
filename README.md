@@ -18,9 +18,9 @@ WebDriver talks to a browser through a driver. Communication is two way: WebDriv
 Easy Steps:
 
 ```
-git clone <this-repo>
+git clone https://github.com/aymanb3lhaj/aqira.git
 pip install -r requirements.txt
-python main.py
+python main.py --help
 ```
 
 ## Getting Started
